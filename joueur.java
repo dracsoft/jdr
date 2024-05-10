@@ -1,4 +1,4 @@
-
+package jdr;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
@@ -15,9 +14,25 @@ import java.util.Base64;
 public class joueur {
     private static JComboBox<String> professionComboBox;
     private static JComboBox<String> raceComboBox;
-    private static DefaultTableModel table;
+    private static DefaultTableModel characteristicTableModel;
+    private static DefaultTableModel skillTableModel;
     private static String playerName;
+    // Variables pour les caractéristiques spécifiques à la race
+    private static int raceForceValue = 0;
+    private static int raceAgiliteValue = 0;
+    private static int raceConstitutionValue = 0;
+    private static int raceIntelligenceValue = 0;
+    private static int raceIntuitionValue = 0;
+    private static int racePresenceValue = 0;
+    private static int raceChanceValue = 0;
+    private static int raceApparenceValue = 0;
+    private static JComboBox<String> subRaceComboBox;
 
+
+    private static String requestDecryptionKey() {
+        return JOptionPane.showInputDialog("Entrez la clé de décryptage :");
+    }
+    
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -43,43 +58,45 @@ public class joueur {
         }
     }
 
-    // Fonction pour déchiffrer une chaîne de caractères chiffrée avec AES
-    private static String decrypt(String strToDecrypt, String decryptionKey) {
-        try {
-            Key secretKey = new SecretKeySpec(decryptionKey.getBytes(StandardCharsets.UTF_8), "AES");
-            Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.DECRYPT_MODE, secretKey);
-            byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(strToDecrypt));
-            return new String(decryptedBytes, StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            System.out.println("Erreur de déchiffrement: " + e.getMessage());
-            return null;
-        }
+// Fonction pour déchiffrer une chaîne de caractères chiffrée avec AES
+private static String decrypt(String strToDecrypt, String decryptionKey) {
+    try {
+        Key secretKey = new SecretKeySpec(decryptionKey.getBytes(StandardCharsets.UTF_8), "AES");
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(strToDecrypt));
+        return new String(decryptedBytes, StandardCharsets.UTF_8);
+    } catch (Exception e) {
+        System.out.println("Erreur de déchiffrement: " + e.getMessage());
+        return null;
     }
-
+}
     private static void createAndShowGUI() {
         // Créer une nouvelle fenêtre
         JFrame frame = new JFrame("Caractéristiques");
-        frame.setSize(600, 400); // Définir la taille de la fenêtre
+        frame.setSize(800, 400); // Définir la taille de la fenêtre
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Fermer l'application lorsque la fenêtre est fermée
 
         // Créer un panneau pour organiser les composants
         JPanel panel = new JPanel(new BorderLayout());
 
         // Créer une liste déroulante pour la profession
-        String[] professions = { "Guerrier", "Bard", "Mage", "Prêtre", "Paladin", "Ranger" }; // ajouter le prof ici
-                                                                                              // ligne 90 98 a ne pas
-                                                                                              // oublier pour configuré
-                                                                                              // la race de manier a
-                                                                                              // rentre les valeur auto
+        String[] professions = { "Guerrier", "Bard", "Mage", "Prêtre", "Paladin", "Ranger" }; // ajouter le prof ici ligne 90 98 a ne pas oublier pour configuré la race de manier arentre les valeur auto
         professionComboBox = new JComboBox<>(professions);
-
-        // Créer une liste déroulante pour la race
-        String[] races = { "Race 1", "Humain", "Race 3" }; // l ajout des race c est ici peux etre a voir pour ajouter
-                                                           // les sous race dans un autre bouton apres avoir sélectionné
-                                                           // la race principale
+        String[] races = { "Race 1", "Humain", "Race 3" };
         raceComboBox = new JComboBox<>(races);
-
+        raceComboBox.addActionListener(e -> {
+            if (raceComboBox.getSelectedItem().equals("Humain")) {
+                subRaceComboBox.setEnabled(true);
+            } else {
+                subRaceComboBox.setEnabled(false);
+                updateSubRaceValues(playerName, playerName);
+            }
+        });
+        String[] subRaces = { "Béornides", "Numenoréens Noirs", "Corsaires", "Dorwinrim", "Dunedain", "Dunelendings", "Easterlinges", "Haradrim", "Lossoth", "Rohirim", "Ruraux", "Urbains", "Variags", "Homme des bois", "Woses" };
+        subRaceComboBox = new JComboBox<>(subRaces);
+        subRaceComboBox.setEnabled(false);
+        
         // Créer un bouton pour saisir les valeurs
         JButton enterButton = new JButton("Entrer Valeurs");
         enterButton.addActionListener(new ActionListener() {
@@ -121,7 +138,7 @@ public class joueur {
             public void actionPerformed(ActionEvent e) {
                 playerName = JOptionPane.showInputDialog("Entrez le nom du joueur à supprimer:");
                 if (playerName != null && !playerName.trim().isEmpty()) {
-                    deletePlayerWithKey(playerName);
+                    deleteData(playerName);
                 } else {
                     JOptionPane.showMessageDialog(null, "Nom du joueur invalide.");
                 }
@@ -134,15 +151,17 @@ public class joueur {
         comboPanel.add(professionComboBox);
         comboPanel.add(new JLabel("Race: "));
         comboPanel.add(raceComboBox);
+        comboPanel.add(new JLabel("Sous-race: "));
+        comboPanel.add(subRaceComboBox);
         comboPanel.add(enterButton);
         comboPanel.add(saveButton);
         comboPanel.add(openButton);
         comboPanel.add(deleteButton);
         panel.add(comboPanel, BorderLayout.NORTH);
 
-        // tableaux des caractéristiques
-        String[] columnNames = { "Caractéristique", "Valeur", "Valeur Normale", "Race", "Total" };
-        Object[][] data = {
+        // Tableau pour les caractéristiques
+        String[] columnNamesCharacteristics = { "Caractéristique", "Valeur", "Valeur Normale", "Race", "Total" };
+        Object[][] dataCharacteristics = {
                 { "Force", 0, 0, "", 0 },
                 { "Agilité", 0, 0, "", 0 },
                 { "Constitution", 0, 0, "", 0 },
@@ -152,11 +171,27 @@ public class joueur {
                 { "Chance", 0, 0, "", 0 },
                 { "Apparence", 0, 0, "", 0 },
         };
-        table = new DefaultTableModel(data, columnNames);
-        JTable jTable = new JTable(table);
+        characteristicTableModel = new DefaultTableModel(dataCharacteristics, columnNamesCharacteristics);
+        JTable characteristicTable = new JTable(characteristicTableModel);
+        JScrollPane characteristicScrollPane = new JScrollPane(characteristicTable);
+        panel.add(characteristicScrollPane, BorderLayout.WEST);
 
-        JScrollPane scrollPane = new JScrollPane(jTable);
-        panel.add(scrollPane, BorderLayout.CENTER);
+        // Tableau pour les compétences de mouvement et les types d'armure
+        String[] columnNamesSkills = { "Manoeuvre/Mouvement", "Degré", "Prof","carac","Object","Spéc" , "Spéc", "Total" };
+        Object[][] dataSkills = {
+                { "Sans Armure", "", "", "", "", "", "" },
+                { "Cuir Souple", "", "", "", "", "", "" },
+                { "Cuir Rigide", "", "", "", "", "", "" },
+                { "Cotte de Maille", "", "", "", "", "", "" },
+                { "Plate", "", "", "", "", "", "" },
+        };
+        skillTableModel = new DefaultTableModel(dataSkills, columnNamesSkills);
+        JTable skillTable = new JTable(skillTableModel);
+        JScrollPane skillScrollPane = new JScrollPane(skillTable);
+
+        // Ajouter les tableaux à la fenêtre
+        panel.add(characteristicScrollPane, BorderLayout.WEST);
+        panel.add(skillScrollPane, BorderLayout.CENTER);
 
         // Ajouter le panneau à la fenêtre
         frame.add(panel);
@@ -164,17 +199,106 @@ public class joueur {
         // Rendre la fenêtre visible
         frame.setVisible(true);
     }
-
     // Saisir les valeurs pour chaque caractéristique et les afficher dans le
     // tableau
-    private static void enterValues() {
-        for (int i = 0; i < table.getRowCount(); i++) {
-            String characteristic = (String) table.getValueAt(i, 0);
-            String valueStr = JOptionPane.showInputDialog("Entrez la valeur pour " + characteristic + ":");
-            int value = Integer.parseInt(valueStr);
-            table.setValueAt(value, i, 1); // Valeur
+// Saisir les valeurs pour chaque caractéristique et les afficher dans le tableau
+// Modifier la méthode enterValues
+private static void updateSubRaceValues(String race, String subRace) {
+    // Mettre à jour les valeurs des caractéristiques spécifiques à la race en fonction de la race et de la sous-race sélectionnées
+    if (race.equals("Humain")) {
+        switch (subRace) {
+            case "Dunedain":
+                raceForceValue = 5;
+                raceConstitutionValue = 10;
+                racePresenceValue = 5;
+                break;
+            case "Woses":
+                raceConstitutionValue = 10;
+                racePresenceValue = -5;
+                break;
+            default:
+                // Définir des valeurs par défaut pour toutes les caractéristiques spécifiques à la race
+                raceForceValue = 5;
+                raceAgiliteValue = 0;
+                raceConstitutionValue = 0;
+                raceIntelligenceValue = 0;
+                raceIntuitionValue = 0;
+                racePresenceValue = 0;
+                raceChanceValue = 0;
+                raceApparenceValue = 0;
+                break;
+        }
+    } else {
+        // Définir des valeurs par défaut pour toutes les caractéristiques spécifiques à la race
+        raceForceValue = 0;
+        raceAgiliteValue = 0;
+        raceConstitutionValue = 0;
+        raceIntelligenceValue = 0;
+        raceIntuitionValue = 0;
+        racePresenceValue = 0;
+        raceChanceValue = 0;
+        raceApparenceValue = 0;
+    }
+}
 
-            String profession = (String) professionComboBox.getSelectedItem();
+private static void enterValues() {
+    for (int i = 0; i < characteristicTableModel.getRowCount(); i++) {
+        String characteristic = (String) characteristicTableModel.getValueAt(i, 0);
+        String valueStr = JOptionPane.showInputDialog("Entrez la valeur pour " + characteristic + ":");
+        int value = Integer.parseInt(valueStr);
+        characteristicTableModel.setValueAt(value, i, 1); // Valeur
+
+        // Mise à jour des valeurs spécifiques à la profession
+        String profession = (String) professionComboBox.getSelectedItem();
+        int professionValue = calculateProfessionValue(profession, characteristic);
+        characteristicTableModel.setValueAt(professionValue, i, 2);
+
+        // Mise à jour des valeurs spécifiques à la race
+        String race = (String) raceComboBox.getSelectedItem();
+        String subRace = (String) subRaceComboBox.getSelectedItem();
+        updateSubRaceValues(race, subRace); // Mettre à jour les valeurs spécifiques à la race en fonction de la race et de la sous-race sélectionnées
+        int raceValue = 0;
+        switch (characteristic) {
+            case "Force":
+                raceValue = raceForceValue;
+                break;
+            case "Agilité":
+                raceValue = raceAgiliteValue;
+                break;
+            case "Constitution":
+                raceValue = raceConstitutionValue;
+                break;
+            case "Intelligence":
+                raceValue = raceIntelligenceValue;
+                break;
+            case "Intuition":
+                raceValue = raceIntuitionValue;
+                break;
+            case "Présence":
+                raceValue = racePresenceValue;
+                break;
+            case "Chance":
+                raceValue = raceChanceValue;
+                break;
+            case "Apparence":
+                raceValue = raceApparenceValue;
+                break;
+            default:
+                break;
+        }
+        characteristicTableModel.setValueAt(raceValue, i, 3);
+
+        // Calculer le total pour cette ligne
+        int totalValue = value + professionValue + raceValue;
+        characteristicTableModel.setValueAt(totalValue, i, 4);
+    }
+
+    // Mettre à jour les compétences après avoir saisi les valeurs
+    updateSkills();
+}
+
+
+private static int calculateProfessionValue(String profession, String characteristic) {
             int professionValue = 0;
             if (profession.equals("Guerrier")) {
                 if (characteristic.equals("Force")) {
@@ -233,35 +357,51 @@ public class joueur {
                     professionValue = 5;
                 }
             }
-
-            table.setValueAt(professionValue, i, 2); // Valeur Normale (Profession)
-
-            String race = (String) raceComboBox.getSelectedItem();
-            int raceValue = 0;
-            if (race.equals("Humain") && characteristic.equals("Force")) { // metode pour ajouter auto un 5 en fo pour
-                                                                           // les humain basique
-                raceValue = 5;
+            return professionValue;
+}
+    private static void updateSkills() {
+        // Mettre à jour les compétences en fonction des totaux des caractéristiques
+        int totalForce = (int) characteristicTableModel.getValueAt(0, 4); // Total de la force
+        int totalAgilite = (int) characteristicTableModel.getValueAt(1, 4); // Total de l'agilité
+        for (int z = 0; z < skillTableModel.getRowCount(); z++) {
+            if (z < 3) {
+                skillTableModel.setValueAt("AG:" + totalAgilite, z, 3); // Total de l'agilité pour les 2 premières lignes
+            } else {
+                skillTableModel.setValueAt("FO:" + totalForce, z, 3); // Total de la force pour les 3 dernières lignes
             }
-            table.setValueAt(raceValue, i, 3);
-
-            // Calculer le total
-            int total = value + professionValue + raceValue; // Valeur + Valeur Normale (Profession) + Race
-            table.setValueAt(total, i, 4); // affiche le total
         }
     }
 
-    // Fonction pour enregistrer les données chiffrées dans un fichier
+    
+    
     private static void saveData(String playerName) {
         StringBuilder data = new StringBuilder();
-        for (int i = 0; i < table.getRowCount(); i++) {
-            for (int j = 0; j < table.getColumnCount(); j++) {
-                data.append(table.getValueAt(i, j));
-                if (j < table.getColumnCount() - 1) {
+    
+        // Sauvegarde des données du premier tableau (caractéristiques)
+        for (int i = 0; i < characteristicTableModel.getRowCount(); i++) {
+            for (int j = 0; j < characteristicTableModel.getColumnCount(); j++) {
+                data.append(characteristicTableModel.getValueAt(i, j));
+                if (j < characteristicTableModel.getColumnCount() - 1) {
                     data.append(",");
                 }
             }
             data.append("\n");
         }
+    
+        // Ajout d'une séparation entre les deux tableaux pour faciliter le traitement lors du chargement
+        data.append("#\n");
+    
+        // Sauvegarde des données du deuxième tableau (compétences)
+        for (int i = 0; i < skillTableModel.getRowCount(); i++) {
+            for (int j = 0; j < skillTableModel.getColumnCount(); j++) {
+                data.append(skillTableModel.getValueAt(i, j));
+                if (j < skillTableModel.getColumnCount() - 1) {
+                    data.append(",");
+                }
+            }
+            data.append("\n");
+        }
+    
         String fileName = playerName + "_data.enc"; // Utilisez le nom du joueur pour créer un fichier unique
         String encryptedData = encrypt(data.toString());
         if (encryptedData != null) {
@@ -274,51 +414,64 @@ public class joueur {
             }
         }
     }
-
-    private static String requestDecryptionKey() {
-        return JOptionPane.showInputDialog("Entrez la clé de décryptage :");
-    }
-
-    // Fonction pour charger les données chiffrées à partir d'un fichier et les
-    // déchiffrer
+    
     private static void loadData(String playerName) {
+        // Lire les données chiffrées depuis le fichier
+        String fileName = playerName + "_data.enc";
         String decryptionKey = requestDecryptionKey();
-        if (decryptionKey != null && !decryptionKey.trim().isEmpty()) {
-            String fileName = playerName + "_data.enc"; // Nom du fichier à partir duquel vous souhaitez charger les
-                                                        // données
-            try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-                StringBuilder stringBuilder = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    stringBuilder.append(line);
-                }
-                String decryptedData = decrypt(stringBuilder.toString(), decryptionKey);
-                if (decryptedData != null) {
-                    JOptionPane.showMessageDialog(null, "Données chargées avec succès pour " + playerName);
-                    // Traiter les données déchiffrées ici
-                } else {
-                    JOptionPane.showMessageDialog(null, "Erreur lors du déchiffrement des données");
-                }
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, "Erreur lors du chargement des données");
-                e.printStackTrace();
+        String encryptedData = "";
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
             }
+            encryptedData = stringBuilder.toString();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Erreur lors du chargement des données");
+            e.printStackTrace();
+            return;
+        }
+    
+        // Déchiffrer les données
+        String decryptedData = decrypt(encryptedData, decryptionKey);
+        if (decryptedData != null) {
+            // Mettre à jour le modèle de tableau avec les données chargées
+            String[] tablesData = decryptedData.split("#"); // Séparer les données des deux tableaux
+            if (tablesData.length >= 1) { // Assurer qu'au moins le premier tableau est présent
+                String[] characteristicsData = tablesData[0].split("\n");
+                int startIndex = 0;
+                if (characteristicsData.length > 0 && characteristicsData[0].trim().isEmpty()) {
+                    startIndex = 1; // Ignorer la première ligne si elle est vide
+                }
+                for (int i = startIndex; i < characteristicsData.length && i < characteristicTableModel.getRowCount(); i++) {
+                    String[] values = characteristicsData[i].split(",");
+                    for (int j = 0; j < values.length && j < characteristicTableModel.getColumnCount(); j++) {
+                        characteristicTableModel.setValueAt(values[j], i - startIndex, j);
+                    }
+                }
+            }
+            if (tablesData.length >= 2) { // Vérifier si le deuxième tableau est présent
+                String[] skillsData = tablesData[1].split("\n");
+                int startIndex = 0;
+                if (skillsData.length > 0 && skillsData[0].trim().isEmpty()) {
+                    startIndex = 1; // Ignorer la première ligne si elle est vide
+                }
+                int numRows = Math.min(skillsData.length, skillTableModel.getRowCount());
+                for (int i = startIndex; i < numRows; i++) {
+                    String[] values = skillsData[i].split(",");
+                    for (int j = 0; j < values.length && j < skillTableModel.getColumnCount(); j++) {
+                        skillTableModel.setValueAt(values[j], i - startIndex, j);
+                    }
+                }
+            }
+            
+            JOptionPane.showMessageDialog(null, "Données chargées avec succès pour " + playerName);
         } else {
-            JOptionPane.showMessageDialog(null, "Clé de décryptage invalide.");
+            JOptionPane.showMessageDialog(null, "Erreur lors du déchiffrement des données");
         }
     }
-
-    // Fonction pour supprimer les données d'un joueur après avoir vérifié la clé
-    private static void deletePlayerWithKey(String playerName) {
-        String inputKey = JOptionPane.showInputDialog("Entrez la clé pour supprimer " + playerName + ":");
-        if (inputKey != null && inputKey.equals(SECRET_KEY)) {
-            deleteData(playerName);
-        } else {
-            JOptionPane.showMessageDialog(null, "Clé incorrecte. Impossible de supprimer " + playerName);
-        }
-    }
-
-    // Fonction pour supprimer les données d'un joueur
+    
     private static void deleteData(String playerName) {
         String fileName = playerName + "_data.enc";
         File file = new File(fileName);
@@ -332,5 +485,6 @@ public class joueur {
             JOptionPane.showMessageDialog(null, "Aucune donnée à supprimer pour " + playerName);
         }
     }
-
+    
+    //amErIqAtRacERKey
 }
