@@ -5,7 +5,6 @@
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
         
-        <!-- Character Class -->
         <mxCell id="zkfFHV4jXpPFQw0GAbJ--0" value="Character " style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;rounded=0;shadow=0;strokeWidth=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
           <mxGeometry x="320" y="60" width="200" height="182" as="geometry">
             <mxRectangle x="334" y="10" width="160" height="26" as="alternateBounds" />
