@@ -204,20 +204,21 @@ public class joueur {
                 { "Chance", 0, 0, "", 0 },
                 { "Apparence", 0, 0, "", 0 },
         };
+
         characteristicTableModel = new DefaultTableModel(dataCharacteristics, columnNamesCharacteristics);
         JTable characteristicTable = new JTable(characteristicTableModel);
         JScrollPane characteristicScrollPane = new JScrollPane(characteristicTable);
         panel.add(characteristicScrollPane, BorderLayout.WEST);
 
         // Tableau pour les compétences de mouvement et les types d'armure
-        String[] columnNamesSkills = { "Manoeuvre/Mouvement", "Degré", "Prof", "carac", "Object", "Spéc", "Spéc",
+        String[] columnNamesSkills = { "Manoeuvre/Mouvement", "Degré", "Prof", "carac", "Object", "Spéc", "Spéc2",
                 "Total" };
         Object[][] dataSkills = {
-                { "Sans Armure", "", "", "", "", "", 0, "" },
-                { "Cuir Souple", "", "", "", "", "", -15, "" },
-                { "Cuir Rigide", "", "", "", "", "", -30, "" },
-                { "Cotte de Maille", "", "", "", "", "", -45, "" },
-                { "Plate", "", "", "", "", "", -60, "" },
+                { "Sans Armure", "", "xx", "", "", "", 0, "" },
+                { "Cuir Souple", "", "xx", "", "", "", -15, "" },
+                { "Cuir Rigide", "", "xx", "", "", "", -30, "" },
+                { "Cotte de Maille", "", "xx", "", "", "", -45, "" },
+                { "Plate", "", "xx", "", "", "", -60, "" },
         };
         skillTableModel = new DefaultTableModel(dataSkills, columnNamesSkills);
         JTable skillTable = new JTable(skillTableModel);
@@ -472,19 +473,22 @@ public class joueur {
         return professionValue;
     }
 
+    private static Object[][] dataSkills = {
+            { "Sans Armure", "", "xx", "", "", "", 0, "" },
+            { "Cuir Souple", "", "xx", "", "", "", -15, "" },
+            { "Cuir Rigide", "", "xx", "", "", "", -30, "" },
+            { "Cotte de Maille", "", "xx", "", "", "", -45, "" },
+            { "Plate", "", "xx", "", "", "", -60, "" },
+    };
+
     private static void updateSkills() {
         // Mettre à jour les compétences en fonction des totaux des caractéristiques
         int totalForce = (int) characteristicTableModel.getValueAt(0, 4); // Total de la force
         int totalAgilite = (int) characteristicTableModel.getValueAt(1, 4); // Total de l'agilité
 
-        for (int z = 0; z < skillTableModel.getRowCount(); z++) {
-            if (z < 3) {
-                skillTableModel.setValueAt("AG:" + totalAgilite, z, 3); // Total de l'agilité pour les 2 premières
-                                                                        // lignes
-            } else {
-                skillTableModel.setValueAt("FO:" + totalForce, z, 3); // Total de la force pour les 3 dernières lignes
-            }
-        }
+        // Utiliser une méthode pour mettre à jour les valeurs en fonction des indices
+        // de ligne
+        updateSkillAttributes(totalForce, totalAgilite);
         String subRace = (String) subRaceComboBox.getSelectedItem();
 
         if (subRace != null) {
@@ -493,424 +497,500 @@ public class joueur {
                 int baseDegree = 0; // Initialiser le degré de base à 0
 
                 // Déterminer le degré de base en fonction de la sous-race et du type d'armure
-                switch (subRace) {
-                    case "aucun pour Hobbit":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "aucun pour Umli":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "aucun pour Nain":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "Béornides":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "Numenoréens Noirs":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "Corsaires":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "Dorwinrim":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "Dunedain":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "Dunelendings":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "Easterlinges":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-
-                    case "Haradrim":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "Lossoth":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "Rohirim":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "Ruraux":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "Urbains":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "Variags":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "Homme des bois":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "Woses":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "Semi-Elfe":
-                        switch (skillName) // cest stat sont bonne
-                        {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "Elfe Sylvain":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "Elfe Sindar":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-                    case "Elfe Noldor":
-                        switch (skillName) {
-                            case "Sans Armure":
-                                baseDegree = 1;
-                                break;
-                            case "Cuir Souple":
-                                baseDegree = 0;
-                                break;
-                            case "Cuir Rigide":
-                                baseDegree = 0;
-                                break;
-                            case "Cotte de Maille":
-                                baseDegree = 1;
-                                break;
-                            case "Plate":
-                                baseDegree = 1;
-                                break;
-                        }
-
-                }
+                baseDegree = getBaseDegree(subRace, skillName);
 
                 int numCases = Integer
                         .parseInt(JOptionPane.showInputDialog("Entrez le nombre de cases pour " + skillName + ":"));
-
                 // Calculer le total du degré en fonction du degré de base et du nombre de cases
                 int totalDegree = (baseDegree + numCases) * 5;
-
-                // Si le total du degré est différent de zéro, mettre à jour le modèle
+                // Mettre à jour le modèle avec le total du degré ou -25 si le total est zéro
                 if (totalDegree != 0) {
                     skillTableModel.setValueAt(String.valueOf(totalDegree), i, 1);
                 } else {
-                    // Sinon, mettre à jour avec -25
                     skillTableModel.setValueAt("-25", i, 1);
                 }
+
+                // Le bonus de profession est toujours 0 pour les manœuvres et mouvements
+                int professionBonus = 0;
+
+                // Bonus d'objet spécial
+                String objectBonusStr = JOptionPane
+                        .showInputDialog("Entrez le bonus d'objet spécial pour " + skillName + ":");
+                int objectBonus = 0;
+                if (objectBonusStr != null && !objectBonusStr.isEmpty()) {
+                    objectBonus = Integer.parseInt(objectBonusStr);
+                    skillTableModel.setValueAt(String.valueOf(objectBonus), i, 4);
+
+                }
+
+                // Bonus de spécificité
+                String specBonusStr = JOptionPane
+                        .showInputDialog("Entrez le bonus de spécificité pour " + skillName + ":");
+                int specBonus = 0;
+                if (specBonusStr != null && !specBonusStr.isEmpty()) {
+                    specBonus = Integer.parseInt(specBonusStr);
+                    skillTableModel.setValueAt(String.valueOf(specBonus), i, 5);
+
+                }
+                int specBonus2 = (int) dataSkills[i][6]; // Utiliser la colonne caractéristique
+
+                // Calculer le total de la compétence en fonction du degré de base, des bonus et
+                // du nombre de cases
+                int totalSkill;
+                String caracValue = (String) skillTableModel.getValueAt(i, 3); // Récupère la valeur de la colonne
+                                                                               // "carac"
+
+                if (caracValue.startsWith("AG")) { // Vérifie si la valeur de "carac" commence par "AG"
+                    totalSkill = totalDegree + totalAgilite + professionBonus + objectBonus + specBonus + specBonus2;
+                } else if (caracValue.startsWith("FO")) { // Vérifie si la valeur de "carac" commence par "FO"
+                    totalSkill = totalDegree + totalForce + professionBonus + objectBonus + specBonus + specBonus2;
+                } else {
+                    totalSkill = totalDegree + professionBonus + objectBonus + specBonus + specBonus2; // Cas par défaut
+                }
+
+                skillTableModel.setValueAt(String.valueOf(totalSkill), i, 7);
+
             }
         }
+    } // Méthode pour mettre à jour les attributs de compétence en fonction des
+      // indices de ligne
+
+    private static void updateSkillAttributes(int totalForce, int totalAgilite) {
+        for (int z = 0; z < skillTableModel.getRowCount(); z++) {
+            if (z < 3) {
+                skillTableModel.setValueAt("AG:" + totalAgilite, z, 3); // Total de l'agilité pour les 2 premières
+                                                                        // lignes
+            } else {
+                skillTableModel.setValueAt("FO:" + totalForce, z, 3); // Total de la force pour les 3 dernières lignes
+            }
+        }
+    }
+
+    private static int getBaseDegree(String subRace, String skillName) {
+        int baseDegree = 0;
+        switch (subRace) {
+            case "aucun pour Hobbit":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "aucun pour Umli":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "aucun pour Nain":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Béornides":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Numenoréens Noirs":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Corsaires":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Dorwinrim":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Dunedain":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Dunelendings":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Easterlinges":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Haradrim":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Lossoth":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Rohirim":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Ruraux":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Urbains":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Variags":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Homme des bois":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Woses":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Semi-Elfe":
+                switch (skillName) // cest stat sont bonne
+                {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Elfe Sylvain":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Elfe Sindar":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Elfe Noldor":
+                switch (skillName) {
+                    case "Sans Armure":
+                        baseDegree = 1;
+                        break;
+                    case "Cuir Souple":
+                        baseDegree = 0;
+                        break;
+                    case "Cuir Rigide":
+                        baseDegree = 0;
+                        break;
+                    case "Cotte de Maille":
+                        baseDegree = 1;
+                        break;
+                    case "Plate":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+        }
+        return baseDegree;
     }
 
     private static void saveData(String playerName) {
