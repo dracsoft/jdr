@@ -213,11 +213,11 @@ public class joueur {
         String[] columnNamesSkills = { "Manoeuvre/Mouvement", "Degré", "Prof", "carac", "Object", "Spéc", "Spéc",
                 "Total" };
         Object[][] dataSkills = {
-                { "Sans Armure", "", "", "", "", "", "" },
-                { "Cuir Souple", "", "", "", "", "", "" },
-                { "Cuir Rigide", "", "", "", "", "", "" },
-                { "Cotte de Maille", "", "", "", "", "", "" },
-                { "Plate", "", "", "", "", "", "" },
+                { "Sans Armure", "", "", "", "", "", 0, "" },
+                { "Cuir Souple", "", "", "", "", "", -15, "" },
+                { "Cuir Rigide", "", "", "", "", "", -30, "" },
+                { "Cotte de Maille", "", "", "", "", "", -45, "" },
+                { "Plate", "", "", "", "", "", -60, "" },
         };
         skillTableModel = new DefaultTableModel(dataSkills, columnNamesSkills);
         JTable skillTable = new JTable(skillTableModel);
