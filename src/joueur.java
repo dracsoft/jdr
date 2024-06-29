@@ -354,61 +354,161 @@ public class joueur {
     }
 
     private static void enterValues() {
-        for (int i = 0; i < characteristicTableModel.getRowCount(); i++) {
-            String characteristic = (String) characteristicTableModel.getValueAt(i, 0);
-            String valueStr = JOptionPane.showInputDialog("Entrez la valeur pour " + characteristic + ":");
-            int value = Integer.parseInt(valueStr);
-            characteristicTableModel.setValueAt(value, i, 1); // Valeur
+        // Options pour le dialogue
+        String[] options = { "Caractéristiques de la race", "Nombre de cases pour les compétences" };
 
-            // Mise à jour des valeurs spécifiques à la profession
-            String profession = (String) professionComboBox.getSelectedItem();
-            int professionValue = calculateProfessionValue(profession, characteristic);
-            characteristicTableModel.setValueAt(professionValue, i, 2);
+        // Affichage du dialogue pour choisir entre caractéristiques ou compétences
+        int choice = JOptionPane.showOptionDialog(null, "Que voulez-vous entrer ?", "Choix",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
-            // Mise à jour des valeurs spécifiques à la race
+        if (choice == 0) {
+            // Entrée des caractéristiques de la race
             String race = (String) raceComboBox.getSelectedItem();
             String subRace = (String) subRaceComboBox.getSelectedItem();
-            updateSubRaceValues(race, subRace, subRace, subRace, subRace, subRace); // Mettre à jour les valeurs
-                                                                                    // spécifiques à la race en fonction
-                                                                                    // de la race et de la sous-race
-                                                                                    // sélectionnées
-            int raceValue = 0;
-            switch (characteristic) {
-                case "Force":
-                    raceValue = raceForceValue;
-                    break;
-                case "Agilité":
-                    raceValue = raceAgiliteValue;
-                    break;
-                case "Constitution":
-                    raceValue = raceConstitutionValue;
-                    break;
-                case "Intelligence":
-                    raceValue = raceIntelligenceValue;
-                    break;
-                case "Intuition":
-                    raceValue = raceIntuitionValue;
-                    break;
-                case "Présence":
-                    raceValue = racePresenceValue;
-                    break;
-                case "Chance":
-                    raceValue = raceChanceValue;
-                    break;
-                case "Apparence":
-                    raceValue = raceApparenceValue;
-                    break;
-                default:
-                    break;
-            }
-            characteristicTableModel.setValueAt(raceValue, i, 3);
+            updateSubRaceValues(race, subRace, subRace, subRace, subRace, subRace); // Mise à jour des valeurs
+                                                                                    // spécifiques à la race
 
-            // Calculer le total pour cette ligne
-            int totalValue = value + professionValue + raceValue;
-            characteristicTableModel.setValueAt(totalValue, i, 4);
+            for (int i = 0; i < characteristicTableModel.getRowCount(); i++) {
+                String characteristic = (String) characteristicTableModel.getValueAt(i, 0);
+                String valueStr = JOptionPane.showInputDialog("Entrez la valeur pour " + characteristic + ":");
+                int value = Integer.parseInt(valueStr);
+                characteristicTableModel.setValueAt(value, i, 1); // Valeur
+
+                // Mise à jour des valeurs spécifiques à la profession
+                String profession = (String) professionComboBox.getSelectedItem();
+                int professionValue = calculateProfessionValue(profession, characteristic);
+                characteristicTableModel.setValueAt(professionValue, i, 2);
+
+                // Mise à jour des valeurs spécifiques à la race
+                int raceValue = getRaceValue(characteristic);
+                characteristicTableModel.setValueAt(raceValue, i, 3);
+
+                // Calculer le total pour cette ligne
+                int totalValue = value + professionValue + raceValue;
+                characteristicTableModel.setValueAt(totalValue, i, 4);
+            }
+        } else if (choice == 1) {
+            // Entrée des nombres de cases pour les compétences
+            String subRace = (String) subRaceComboBox.getSelectedItem();
+
+            for (int i = 0; i < skillTableModel.getRowCount(); i++) {
+                String skillName = (String) skillTableModel.getValueAt(i, 0);
+                int baseDegree = getBaseDegree(subRace, skillName);
+
+                int numCases = Integer
+                        .parseInt(JOptionPane.showInputDialog("Entrez le nombre de cases pour " + skillName + ":"));
+                int totalDegree = (baseDegree + numCases) * 5;
+
+                // Demander le bonus d'objet spécial seulement si le totalDegree est différent
+                // de zéro
+                if (totalDegree != 0) {
+                    String objectBonusStr = JOptionPane
+                            .showInputDialog("Entrez le bonus d'objet spécial pour " + skillName + ":");
+                    int objectBonus = 0;
+                    if (objectBonusStr != null && !objectBonusStr.isEmpty()) {
+                        objectBonus = Integer.parseInt(objectBonusStr);
+                    }
+
+                    // Mettre à jour le modèle avec le total du degré et le bonus d'objet spécial
+                    int finalTotal = totalDegree + objectBonus;
+                    skillTableModel.setValueAt(String.valueOf(finalTotal), i, 1);
+                } else {
+                    skillTableModel.setValueAt("-25", i, 1);
+                }
+
+                // Mettre à jour les autres colonnes spécifiques aux compétences
+                // ...
+            }
         }
-        // Mettre à jour les compétences après avoir saisi les valeurs
-        updateSkills();
+
+        // Mettre à jour les compétences après avoir saisi les valeurs, mais seulement
+        // si on n'a pas choisi les caractéristiques
+        if (choice == 1) {
+            updateSkills();
+        }
+    }
+
+    private static void updateSkills() {
+        // Récupérer les valeurs totales des caractéristiques
+        int totalForce = (int) characteristicTableModel.getValueAt(0, 4); // Total de la force
+        int totalAgilite = (int) characteristicTableModel.getValueAt(1, 4); // Total de l'agilité
+
+        // Utiliser une méthode pour mettre à jour les valeurs en fonction des indices
+        // de ligne
+        updateSkillAttributes(totalForce, totalAgilite);
+
+        // Récupérer la sous-race sélectionnée
+        String subRace = (String) subRaceComboBox.getSelectedItem();
+
+        if (subRace != null) {
+            for (int i = 0; i < skillTableModel.getRowCount(); i++) {
+                String skillName = (String) skillTableModel.getValueAt(i, 0);
+
+                // Obtenir le degré de base en fonction de la sous-race et du nom de la
+                // compétence
+                int baseDegree = getBaseDegree(subRace, skillName);
+
+                // Demander le nombre de cases
+                int numCases = Integer.parseInt(
+                        JOptionPane.showInputDialog("Entrez le nombre de cases pour " + skillName + ":"));
+
+                // Calculer le total du degré en fonction du degré de base et du nombre de cases
+                int totalDegree = (baseDegree + numCases) * 5;
+
+                // Mettre à jour le modèle avec le total du degré ou -25 si le total est zéro
+                if (totalDegree != 0) {
+                    skillTableModel.setValueAt(String.valueOf(totalDegree), i, 1);
+                } else {
+                    skillTableModel.setValueAt("-25", i, 1);
+                }
+
+                // Demander et mettre à jour le bonus d'objet spécial
+                String objectBonusStr = JOptionPane
+                        .showInputDialog("Entrez le bonus d'objet spécial pour " + skillName + ":");
+                int objectBonus = 0;
+                if (objectBonusStr != null && !objectBonusStr.isEmpty()) {
+                    objectBonus = Integer.parseInt(objectBonusStr);
+                }
+                skillTableModel.setValueAt(String.valueOf(objectBonus), i, 4);
+
+                // Demander et mettre à jour le bonus de spécificité
+                String specBonusStr = JOptionPane
+                        .showInputDialog("Entrez le bonus de spécificité pour " + skillName + ":");
+                int specBonus = 0;
+                int specBonus2 = (int) skillTableModel.getValueAt(i, 6);
+                if (specBonusStr != null && !specBonusStr.isEmpty()) {
+                    specBonus = Integer.parseInt(specBonusStr);
+                }
+                skillTableModel.setValueAt(String.valueOf(specBonus), i, 5);
+                // Calculer et mettre à jour le total de la compétence
+                int totalSkill;
+                String caracValue = (String) skillTableModel.getValueAt(i, 3); // Récupère la valeur de la colonne
+                                                                               // "carac"
+
+                if (caracValue.startsWith("AG")) {
+                    totalSkill = totalDegree + totalAgilite + objectBonus + specBonus + specBonus2;
+                } else if (caracValue.startsWith("FO")) {
+                    totalSkill = totalDegree + totalForce + objectBonus + specBonus + specBonus2;
+                } else {
+                    totalSkill = totalDegree + objectBonus + specBonus + specBonus2; // Cas par défaut
+                }
+
+                skillTableModel.setValueAt(String.valueOf(totalSkill), i, 7); // Mettre à jour la colonne "totalSkill"
+            }
+        }
+    }
+
+    // Autres méthodes nécessaires
+
+    private static void updateSkillAttributes(int totalForce, int totalAgilite) {
+        for (int z = 0; z < skillTableModel.getRowCount(); z++) {
+            if (z < 3) {
+                skillTableModel.setValueAt("AG:" + totalAgilite, z, 3); // Total de l'agilité pour les 2 premières
+                                                                        // lignes
+            } else {
+                skillTableModel.setValueAt("FO:" + totalForce, z, 3); // Total de la force pour les 3 dernières lignes
+            }
+        }
     }
 
     private static int calculateProfessionValue(String profession, String characteristic) {
@@ -473,96 +573,26 @@ public class joueur {
         return professionValue;
     }
 
-    private static Object[][] dataSkills = {
-            { "Sans Armure", "", "xx", "", "", "", 0, "" },
-            { "Cuir Souple", "", "xx", "", "", "", -15, "" },
-            { "Cuir Rigide", "", "xx", "", "", "", -30, "" },
-            { "Cotte de Maille", "", "xx", "", "", "", -45, "" },
-            { "Plate", "", "xx", "", "", "", -60, "" },
-    };
-
-    private static void updateSkills() {
-        // Mettre à jour les compétences en fonction des totaux des caractéristiques
-        int totalForce = (int) characteristicTableModel.getValueAt(0, 4); // Total de la force
-        int totalAgilite = (int) characteristicTableModel.getValueAt(1, 4); // Total de l'agilité
-
-        // Utiliser une méthode pour mettre à jour les valeurs en fonction des indices
-        // de ligne
-        updateSkillAttributes(totalForce, totalAgilite);
-        String subRace = (String) subRaceComboBox.getSelectedItem();
-
-        if (subRace != null) {
-            for (int i = 0; i < skillTableModel.getRowCount(); i++) {
-                String skillName = (String) skillTableModel.getValueAt(i, 0);
-                int baseDegree = 0; // Initialiser le degré de base à 0
-
-                // Déterminer le degré de base en fonction de la sous-race et du type d'armure
-                baseDegree = getBaseDegree(subRace, skillName);
-
-                int numCases = Integer
-                        .parseInt(JOptionPane.showInputDialog("Entrez le nombre de cases pour " + skillName + ":"));
-                // Calculer le total du degré en fonction du degré de base et du nombre de cases
-                int totalDegree = (baseDegree + numCases) * 5;
-                // Mettre à jour le modèle avec le total du degré ou -25 si le total est zéro
-                if (totalDegree != 0) {
-                    skillTableModel.setValueAt(String.valueOf(totalDegree), i, 1);
-                } else {
-                    skillTableModel.setValueAt("-25", i, 1);
-                }
-
-                // Le bonus de profession est toujours 0 pour les manœuvres et mouvements
-                int professionBonus = 0;
-
-                // Bonus d'objet spécial
-                String objectBonusStr = JOptionPane
-                        .showInputDialog("Entrez le bonus d'objet spécial pour " + skillName + ":");
-                int objectBonus = 0;
-                if (objectBonusStr != null && !objectBonusStr.isEmpty()) {
-                    objectBonus = Integer.parseInt(objectBonusStr);
-                    skillTableModel.setValueAt(String.valueOf(objectBonus), i, 4);
-
-                }
-
-                // Bonus de spécificité
-                String specBonusStr = JOptionPane
-                        .showInputDialog("Entrez le bonus de spécificité pour " + skillName + ":");
-                int specBonus = 0;
-                if (specBonusStr != null && !specBonusStr.isEmpty()) {
-                    specBonus = Integer.parseInt(specBonusStr);
-                    skillTableModel.setValueAt(String.valueOf(specBonus), i, 5);
-
-                }
-                int specBonus2 = (int) dataSkills[i][6]; // Utiliser la colonne caractéristique
-
-                // Calculer le total de la compétence en fonction du degré de base, des bonus et
-                // du nombre de cases
-                int totalSkill;
-                String caracValue = (String) skillTableModel.getValueAt(i, 3); // Récupère la valeur de la colonne
-                                                                               // "carac"
-
-                if (caracValue.startsWith("AG")) { // Vérifie si la valeur de "carac" commence par "AG"
-                    totalSkill = totalDegree + totalAgilite + professionBonus + objectBonus + specBonus + specBonus2;
-                } else if (caracValue.startsWith("FO")) { // Vérifie si la valeur de "carac" commence par "FO"
-                    totalSkill = totalDegree + totalForce + professionBonus + objectBonus + specBonus + specBonus2;
-                } else {
-                    totalSkill = totalDegree + professionBonus + objectBonus + specBonus + specBonus2; // Cas par défaut
-                }
-
-                skillTableModel.setValueAt(String.valueOf(totalSkill), i, 7);
-
-            }
-        }
-    } // Méthode pour mettre à jour les attributs de compétence en fonction des
-      // indices de ligne
-
-    private static void updateSkillAttributes(int totalForce, int totalAgilite) {
-        for (int z = 0; z < skillTableModel.getRowCount(); z++) {
-            if (z < 3) {
-                skillTableModel.setValueAt("AG:" + totalAgilite, z, 3); // Total de l'agilité pour les 2 premières
-                                                                        // lignes
-            } else {
-                skillTableModel.setValueAt("FO:" + totalForce, z, 3); // Total de la force pour les 3 dernières lignes
-            }
+    private static int getRaceValue(String characteristic) {
+        switch (characteristic) {
+            case "Force":
+                return raceForceValue;
+            case "Agilité":
+                return raceAgiliteValue;
+            case "Constitution":
+                return raceConstitutionValue;
+            case "Intelligence":
+                return raceIntelligenceValue;
+            case "Intuition":
+                return raceIntuitionValue;
+            case "Présence":
+                return racePresenceValue;
+            case "Chance":
+                return raceChanceValue;
+            case "Apparence":
+                return raceApparenceValue;
+            default:
+                return 0;
         }
     }
 
