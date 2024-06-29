@@ -435,7 +435,7 @@ public class joueur {
 
         // Utiliser une méthode pour mettre à jour les valeurs en fonction des indices
         // de ligne
-        updateSkillAttributes(totalForce, totalAgilite);
+        caracSkillAttributes(totalForce, totalAgilite);
 
         // Récupérer la sous-race sélectionnée
         String subRace = (String) subRaceComboBox.getSelectedItem();
@@ -475,7 +475,6 @@ public class joueur {
                 String specBonusStr = JOptionPane
                         .showInputDialog("Entrez le bonus de spécificité pour " + skillName + ":");
                 int specBonus = 0;
-                int specBonus2 = (int) skillTableModel.getValueAt(i, 6);
                 if (specBonusStr != null && !specBonusStr.isEmpty()) {
                     specBonus = Integer.parseInt(specBonusStr);
                 }
@@ -485,6 +484,7 @@ public class joueur {
                 String caracValue = (String) skillTableModel.getValueAt(i, 3); // Récupère la valeur de la colonne
                                                                                // "carac"
 
+                int specBonus2 = (int) skillTableModel.getValueAt(i, 6);
                 if (caracValue.startsWith("AG")) {
                     totalSkill = totalDegree + totalAgilite + objectBonus + specBonus + specBonus2;
                 } else if (caracValue.startsWith("FO")) {
@@ -500,7 +500,7 @@ public class joueur {
 
     // Autres méthodes nécessaires
 
-    private static void updateSkillAttributes(int totalForce, int totalAgilite) {
+    private static void caracSkillAttributes(int totalForce, int totalAgilite) {
         for (int z = 0; z < skillTableModel.getRowCount(); z++) {
             if (z < 3) {
                 skillTableModel.setValueAt("AG:" + totalAgilite, z, 3); // Total de l'agilité pour les 2 premières
