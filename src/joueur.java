@@ -388,42 +388,6 @@ public class joueur {
                 characteristicTableModel.setValueAt(totalValue, i, 4);
             }
         } else if (choice == 1) {
-            // Entrée des nombres de cases pour les compétences
-            String subRace = (String) subRaceComboBox.getSelectedItem();
-
-            for (int i = 0; i < skillTableModel.getRowCount(); i++) {
-                String skillName = (String) skillTableModel.getValueAt(i, 0);
-                int baseDegree = getBaseDegree(subRace, skillName);
-
-                int numCases = Integer
-                        .parseInt(JOptionPane.showInputDialog("Entrez le nombre de cases pour " + skillName + ":"));
-                int totalDegree = (baseDegree + numCases) * 5;
-
-                // Demander le bonus d'objet spécial seulement si le totalDegree est différent
-                // de zéro
-                if (totalDegree != 0) {
-                    String objectBonusStr = JOptionPane
-                            .showInputDialog("Entrez le bonus d'objet spécial pour " + skillName + ":");
-                    int objectBonus = 0;
-                    if (objectBonusStr != null && !objectBonusStr.isEmpty()) {
-                        objectBonus = Integer.parseInt(objectBonusStr);
-                    }
-
-                    // Mettre à jour le modèle avec le total du degré et le bonus d'objet spécial
-                    int finalTotal = totalDegree + objectBonus;
-                    skillTableModel.setValueAt(String.valueOf(finalTotal), i, 1);
-                } else {
-                    skillTableModel.setValueAt("-25", i, 1);
-                }
-
-                // Mettre à jour les autres colonnes spécifiques aux compétences
-                // ...
-            }
-        }
-
-        // Mettre à jour les compétences après avoir saisi les valeurs, mais seulement
-        // si on n'a pas choisi les caractéristiques
-        if (choice == 1) {
             updateSkills();
         }
     }
@@ -441,6 +405,8 @@ public class joueur {
         String subRace = (String) subRaceComboBox.getSelectedItem();
 
         if (subRace != null) {
+            // Étape 1 : Demander le nombre de cases pour chaque compétence et calculer le
+            // totalDegree
             for (int i = 0; i < skillTableModel.getRowCount(); i++) {
                 String skillName = (String) skillTableModel.getValueAt(i, 0);
 
@@ -449,8 +415,8 @@ public class joueur {
                 int baseDegree = getBaseDegree(subRace, skillName);
 
                 // Demander le nombre de cases
-                int numCases = Integer.parseInt(
-                        JOptionPane.showInputDialog("Entrez le nombre de cases pour " + skillName + ":"));
+                int numCases = Integer
+                        .parseInt(JOptionPane.showInputDialog("Entrez le nombre de cases pour " + skillName + ":"));
 
                 // Calculer le total du degré en fonction du degré de base et du nombre de cases
                 int totalDegree = (baseDegree + numCases) * 5;
@@ -461,30 +427,67 @@ public class joueur {
                 } else {
                     skillTableModel.setValueAt("-25", i, 1);
                 }
+            }
 
-                // Demander et mettre à jour le bonus d'objet spécial
-                String objectBonusStr = JOptionPane
-                        .showInputDialog("Entrez le bonus d'objet spécial pour " + skillName + ":");
-                int objectBonus = 0;
-                if (objectBonusStr != null && !objectBonusStr.isEmpty()) {
-                    objectBonus = Integer.parseInt(objectBonusStr);
-                }
-                skillTableModel.setValueAt(String.valueOf(objectBonus), i, 4);
+            // Étape 2 : Demander les bonus et spécificités, puis recalculer les compétences
+            for (int i = 0; i < skillTableModel.getRowCount(); i++) {
+                String skillName = (String) skillTableModel.getValueAt(i, 0);
+                // Demander s'il y a des bonus ou des spécificités
+                int response = JOptionPane.showOptionDialog(null,
+                        "Y a-t-il des bonus ou des spécificités pour " + skillName + "?",
+                        "Bonus et Spécificités",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        new String[] { "Oui", "Non" },
+                        "Non");
 
-                // Demander et mettre à jour le bonus de spécificité
-                String specBonusStr = JOptionPane
-                        .showInputDialog("Entrez le bonus de spécificité pour " + skillName + ":");
-                int specBonus = 0;
-                if (specBonusStr != null && !specBonusStr.isEmpty()) {
-                    specBonus = Integer.parseInt(specBonusStr);
+                if (response == JOptionPane.YES_OPTION) {
+                    // Demander et mettre à jour le bonus d'objet spécial
+                    String objectBonusStr = JOptionPane
+                            .showInputDialog("Entrez le bonus d'objet spécial pour " + skillName + ":");
+                    int objectBonus = 0;
+                    if (objectBonusStr != null && !objectBonusStr.trim().isEmpty()) {
+                        try {
+                            objectBonus = Integer.parseInt(objectBonusStr);
+                        } catch (NumberFormatException e) {
+                            objectBonus = 0; // Mettre une valeur par défaut en cas d'erreur de format
+                        }
+                    }
+                    skillTableModel.setValueAt(String.valueOf(objectBonus), i, 4);
+
+                    // Demander et mettre à jour le bonus de spécificité
+                    String specBonusStr = JOptionPane
+                            .showInputDialog("Entrez le bonus de spécificité pour " + skillName + ":");
+                    int specBonus = 0;
+                    if (specBonusStr != null && !specBonusStr.trim().isEmpty()) {
+                        try {
+                            specBonus = Integer.parseInt(specBonusStr);
+                        } catch (NumberFormatException e) {
+                            specBonus = 0; // Mettre une valeur par défaut en cas d'erreur de format
+                        }
+                    }
+                    skillTableModel.setValueAt(String.valueOf(specBonus), i, 5);
+                } else if (response == JOptionPane.NO_OPTION) {
+                    // Si la réponse est "Non", mettre les bonus à 0
+                    skillTableModel.setValueAt("0", i, 4); // Bonus d'objet spécial
+                    skillTableModel.setValueAt("0", i, 5); // Bonus de spécificité
                 }
-                skillTableModel.setValueAt(String.valueOf(specBonus), i, 5);
+
                 // Calculer et mettre à jour le total de la compétence
                 int totalSkill;
+                int totalDegree = Integer.parseInt((String) skillTableModel.getValueAt(i, 1)); // Récupérer le
+                                                                                               // totalDegree déjà
+                                                                                               // calculé
                 String caracValue = (String) skillTableModel.getValueAt(i, 3); // Récupère la valeur de la colonne
                                                                                // "carac"
+                int specBonus2 = Integer.parseInt(skillTableModel.getValueAt(i, 6).toString()); // Récupérer le
+                                                                                                // specBonus2
 
-                int specBonus2 = (int) skillTableModel.getValueAt(i, 6);
+                // Récupérer les valeurs actuelles des bonus
+                int objectBonus = Integer.parseInt((String) skillTableModel.getValueAt(i, 4));
+                int specBonus = Integer.parseInt((String) skillTableModel.getValueAt(i, 5));
+
                 if (caracValue.startsWith("AG")) {
                     totalSkill = totalDegree + totalAgilite + objectBonus + specBonus + specBonus2;
                 } else if (caracValue.startsWith("FO")) {
@@ -497,8 +500,6 @@ public class joueur {
             }
         }
     }
-
-    // Autres méthodes nécessaires
 
     private static void caracSkillAttributes(int totalForce, int totalAgilite) {
         for (int z = 0; z < skillTableModel.getRowCount(); z++) {
