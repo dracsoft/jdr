@@ -30,6 +30,7 @@ public class joueur {
     private static JComboBox<String> raceComboBox;
     private static DefaultTableModel characteristicTableModel;
     private static DefaultTableModel skillTableModel;
+    private static DefaultTableModel WeaponsTableModel;
     private static String playerName;
     // Variables pour les caractéristiques spécifiques à la race
     private static int raceForceValue = 0;
@@ -224,7 +225,21 @@ public class joueur {
         JTable skillTable = new JTable(skillTableModel);
         JScrollPane skillScrollPane = new JScrollPane(skillTable);
 
-        // Ajouter les tableaux à la fenêtre
+        // Tableau pour les armes (bonus offensifs)
+        String[] columnWeaponsNamesSkills = { "Armes(bonus offensifs)", "Degré", "Prof", "carac", "Object", "Spéc",
+                "Spéc2", "Total" };
+        Object[][] dataWeapons = {
+                { "Tranchant à 1 main", "", "xx", "", "", "", "", "" },
+                { "Contandant à 1 main", "", "xx", "", "", "", "", "" },
+                { "à 2 main", "", "xx", "", "", "", "", "" },
+                { "Lancer", "", "xx", "", "", "", "", "" },
+                { "Projectile", "", "xx", "", "", "", "", "" },
+                { "D'Hast", "", "xx", "", "", "", "", "" },
+        };
+        WeaponsTableModel = new DefaultTableModel(dataWeapons, columnWeaponsNamesSkills);
+        JTable weaponsTable = new JTable(WeaponsTableModel);
+        JScrollPane weaponsScrollPane = new JScrollPane(weaponsTable);
+        panel.add(weaponsScrollPane, BorderLayout.SOUTH); // Ajouter sous le tableau des compétences
         panel.add(characteristicScrollPane, BorderLayout.WEST);
         panel.add(skillScrollPane, BorderLayout.CENTER);
 
@@ -355,7 +370,7 @@ public class joueur {
 
     private static void enterValues() {
         // Options pour le dialogue
-        String[] options = { "Caractéristiques de la race", "Nombre de cases pour les compétences" };
+        String[] options = { "Caractéristiques de la race", "Nombre de cases pour les compétences", "stat arme" };
 
         // Affichage du dialogue pour choisir entre caractéristiques ou compétences
         int choice = JOptionPane.showOptionDialog(null, "Que voulez-vous entrer ?", "Choix",
@@ -389,6 +404,8 @@ public class joueur {
             }
         } else if (choice == 1) {
             updateSkills();
+        } else if (choice == 2) {
+            updateWeapons();
         }
     }
 
@@ -396,7 +413,6 @@ public class joueur {
         // Récupérer les valeurs totales des caractéristiques
         int totalForce = (int) characteristicTableModel.getValueAt(0, 4); // Total de la force
         int totalAgilite = (int) characteristicTableModel.getValueAt(1, 4); // Total de l'agilité
-
         // Utiliser une méthode pour mettre à jour les valeurs en fonction des indices
         // de ligne
         caracSkillAttributes(totalForce, totalAgilite);
@@ -472,6 +488,7 @@ public class joueur {
                     // Si la réponse est "Non", mettre les bonus à 0
                     skillTableModel.setValueAt("0", i, 4); // Bonus d'objet spécial
                     skillTableModel.setValueAt("0", i, 5); // Bonus de spécificité
+                    skillTableModel.setValueAt("0", i, 6); // Bonus de spécificité2
                 }
 
                 // Calculer et mettre à jour le total de la compétence
@@ -484,7 +501,7 @@ public class joueur {
                 int specBonus2 = Integer.parseInt(skillTableModel.getValueAt(i, 6).toString()); // Récupérer le
                                                                                                 // specBonus2
 
-                // Récupérer les valeurs actuelles des bonus
+                // Récuif (caracValue.startsWith("érer les valeurs actuelles des bonus
                 int objectBonus = Integer.parseInt((String) skillTableModel.getValueAt(i, 4));
                 int specBonus = Integer.parseInt((String) skillTableModel.getValueAt(i, 5));
 
@@ -495,10 +512,131 @@ public class joueur {
                 } else {
                     totalSkill = totalDegree + objectBonus + specBonus + specBonus2; // Cas par défaut
                 }
-
                 skillTableModel.setValueAt(String.valueOf(totalSkill), i, 7); // Mettre à jour la colonne "totalSkill"
             }
         }
+    }
+
+    private static void updateWeapons() {
+        // Récupérer les valeurs totales des caractéristiques pour les armes
+        int totalForce = (int) characteristicTableModel.getValueAt(0, 4); // Total de la force
+        int totalAgilite = (int) characteristicTableModel.getValueAt(1, 4); // Total de l'agilité
+
+        // Utiliser une méthode pour mettre à jour les valeurs en fonction des indices
+        // de ligne
+        updateWeaponsAttributes(totalForce, totalAgilite);
+
+        // Récupérer la sous-race sélectionnée
+        String subRace = (String) subRaceComboBox.getSelectedItem();
+
+        if (subRace != null) {
+            // Parcourir le tableau de données des armes
+            for (int i = 0; i < WeaponsTableModel.getRowCount(); i++) {
+                String weaponName = (String) WeaponsTableModel.getValueAt(i, 0); // Nom de l'arme
+
+                // Obtenir le degré de base pour l'arme
+                int baseDegree = BaseDegreeForWeapons(subRace, weaponName);
+
+                // Demander le nombre de cases pour l'arme
+                int numCases = Integer
+                        .parseInt(JOptionPane.showInputDialog("Entrez le nombre de cases pour " + weaponName + ":"));
+
+                // Calculer le total du degré en fonction du degré de base et du nombre de cases
+                int totalDegree = (baseDegree + numCases) * 5;
+
+                // Mettre à jour le modèle avec le total du degré ou -25 si le total est zéro
+                if (totalDegree != 0) {
+                    WeaponsTableModel.setValueAt(String.valueOf(totalDegree), i, 1);
+                } else {
+                    WeaponsTableModel.setValueAt("-25", i, 1);
+                }
+
+                // Demander s'il y a des bonus ou des spécificités pour l'arme
+                int response = JOptionPane.showOptionDialog(null,
+                        "Y a-t-il des bonus ou des spécificités pour " + weaponName + "?",
+                        "Bonus et Spécificités",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        new String[] { "Oui", "Non" },
+                        "Non");
+
+                if (response == JOptionPane.YES_OPTION) {
+                    // Demander et mettre à jour le bonus d'objet spécial
+                    String objectBonusStr = JOptionPane
+                            .showInputDialog("Entrez le bonus d'objet spécial pour " + weaponName + ":");
+                    int objectBonus = 0;
+                    if (objectBonusStr != null && !objectBonusStr.trim().isEmpty()) {
+                        try {
+                            objectBonus = Integer.parseInt(objectBonusStr);
+                        } catch (NumberFormatException e) {
+                            objectBonus = 0; // Mettre une valeur par défaut en cas d'erreur de format
+                        }
+                    }
+                    WeaponsTableModel.setValueAt(String.valueOf(objectBonus), i, 4);
+
+                    // Demander et mettre à jour le bonus de spécificité
+                    String specBonusStr = JOptionPane
+                            .showInputDialog("Entrez le bonus de spécificité pour " + weaponName + ":");
+                    int specBonus = 0;
+                    if (specBonusStr != null && !specBonusStr.trim().isEmpty()) {
+                        try {
+                            specBonus = Integer.parseInt(specBonusStr);
+                        } catch (NumberFormatException e) {
+                            specBonus = 0; // Mettre une valeur par défaut en cas d'erreur de format
+                        }
+
+                    }
+                    WeaponsTableModel.setValueAt(String.valueOf(specBonus), i, 5);
+
+                    // Demander et mettre à jour le bonus de spécificité
+                    String spec2BonusStr = JOptionPane
+                            .showInputDialog("Entrez le bonus de spécificité pour " + weaponName + ":");
+                    int spec2Bonus = 0;
+                    if (spec2BonusStr != null && !spec2BonusStr.trim().isEmpty()) {
+                        try {
+                            spec2Bonus = Integer.parseInt(spec2BonusStr);
+                        } catch (NumberFormatException e) {
+                            spec2Bonus = 0; // Mettre une valeur par défaut en cas d'erreur de format
+                        }
+
+                    }
+                    WeaponsTableModel.setValueAt(String.valueOf(spec2Bonus), i, 6);
+
+                } else if (response == JOptionPane.NO_OPTION) {
+                    // Si la réponse est "Non", mettre les bonus à 0
+                    WeaponsTableModel.setValueAt("0", i, 4); // Bonus d'objet spécial
+                    WeaponsTableModel.setValueAt("0", i, 5); // Bonus de spécificité
+                    WeaponsTableModel.setValueAt("0", i, 6); // Bonus de spécificité2
+                }
+
+                // Calculer et mettre à jour le total de la compétence pour l'arme
+                int totalWeapon;
+                int totalDegreeWeapon = Integer.parseInt((String) WeaponsTableModel.getValueAt(i, 1)); // Récupérer le
+                                                                                                       // totalDegree
+                                                                                                       // déjà calculé
+                String caracValue = (String) WeaponsTableModel.getValueAt(i, 3); // Récupérer la valeur de la colonne //
+                                                                                 // "carac"
+                int objectBonus = Integer.parseInt((String) WeaponsTableModel.getValueAt(i, 4));
+                int specBonus = Integer.parseInt((String) WeaponsTableModel.getValueAt(i, 5));
+                int specBonus2 = Integer.parseInt((String) WeaponsTableModel.getValueAt(i, 6)); // Récupérer le
+                // specBonus2
+
+                // Calculer le totalSkill en fonction de la valeur de caracValue
+                if (caracValue.startsWith("AG")) {
+                    totalWeapon = totalDegreeWeapon + totalAgilite + objectBonus + specBonus + specBonus2;
+                } else if (caracValue.startsWith("FO")) {
+                    totalWeapon = totalDegreeWeapon + totalForce + objectBonus + specBonus + specBonus2;
+                } else {
+                    totalWeapon = totalDegreeWeapon + objectBonus + specBonus + specBonus2; // Cas par défaut
+                }
+
+                // Mettre à jour la colonne "totalSkill" dans le modèle de tableau des armes
+                WeaponsTableModel.setValueAt(String.valueOf(totalWeapon), i, 7);
+            }
+        }
+        // Mettre à jour l'affichage ou le modèle de tableau pour les armes si
+        // nécessaire
     }
 
     private static void caracSkillAttributes(int totalForce, int totalAgilite) {
@@ -506,8 +644,19 @@ public class joueur {
             if (z < 3) {
                 skillTableModel.setValueAt("AG:" + totalAgilite, z, 3); // Total de l'agilité pour les 2 premières
                                                                         // lignes
-            } else {
-                skillTableModel.setValueAt("FO:" + totalForce, z, 3); // Total de la force pour les 3 dernières lignes
+            } else if (z < 6) {
+                skillTableModel.setValueAt("FO:" + totalForce, z, 3); // Total de la force pour les lignes 3 à 5
+            }
+        }
+    }
+
+    private static void updateWeaponsAttributes(int totalForce, int totalAgilite) {
+        for (int z = 0; z < WeaponsTableModel.getRowCount(); z++) {
+            if (z < 3 || z == 5) {
+                WeaponsTableModel.setValueAt("FO:" + totalForce, z, 3); // Total de la force pour les lignes 3 à 5
+                                                                        // lignes
+            } else if (z == 3 || z == 4) {
+                WeaponsTableModel.setValueAt("AG:" + totalAgilite, z, 3); // Total de l'agilité pour les 2 premières
             }
         }
     }
@@ -1024,6 +1173,497 @@ public class joueur {
         return baseDegree;
     }
 
+    private static int BaseDegreeForWeapons(String subRace, String weaponName) {
+        int baseDegree = 0;
+        switch (subRace) {
+            case "aucun pour Hobbit":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "aucun pour Umli":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "aucun pour Nain":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Béornides":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Numenoréens Noirs":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Corsaires":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Dorwinrim":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Dunedain":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Dunelendings":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Easterlinges":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Haradrim":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Lossoth":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Rohirim":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Ruraux":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Urbains":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Variags":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Homme des bois":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Woses":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Semi-Elfe":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Elfe Sylvain":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Elfe Sindar":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+            case "Elfe Noldor":
+                switch (weaponName) {
+                    case "Tranchant à 1 main":
+                        baseDegree = 1;
+                        break;
+                    case "Contandant à 1 main":
+                        baseDegree = 0;
+                        break;
+                    case "à 2 main":
+                        baseDegree = 0;
+                        break;
+                    case "Lancer":
+                        baseDegree = 1;
+                        break;
+                    case "Projectile":
+                        baseDegree = 1;
+                        break;
+                    case "D'Hast":
+                        baseDegree = 1;
+                        break;
+                }
+                break;
+        }
+        return baseDegree;
+    }
+
     private static void saveData(String playerName) {
         StringBuilder data = new StringBuilder();
 
@@ -1047,6 +1687,20 @@ public class joueur {
             for (int j = 0; j < skillTableModel.getColumnCount(); j++) {
                 data.append(skillTableModel.getValueAt(i, j));
                 if (j < skillTableModel.getColumnCount() - 1) {
+                    data.append(",");
+                }
+            }
+            data.append("\n");
+        }
+
+        // Ajout d'une autre séparation pour le nouveau tableau
+        data.append("#\n");
+
+        // Sauvegarde des données du troisième tableau (WeaponsTableModel)
+        for (int i = 0; i < WeaponsTableModel.getRowCount(); i++) {
+            for (int j = 0; j < WeaponsTableModel.getColumnCount(); j++) {
+                data.append(WeaponsTableModel.getValueAt(i, j));
+                if (j < WeaponsTableModel.getColumnCount() - 1) {
                     data.append(",");
                 }
             }
@@ -1093,9 +1747,9 @@ public class joueur {
         // Déchiffrer les données
         String decryptedData = decrypt(encryptedData, decryptionKey);
         if (decryptedData != null) {
-            // Mettre à jour le modèle de tableau avec les données chargées
-            String[] tablesData = decryptedData.split("#"); // Séparer les données des deux tableaux
-            if (tablesData.length >= 1) { // Assurer qu'au moins le premier tableau est présent
+            // Mettre à jour les modèles de tableau avec les données chargées
+            String[] tablesData = decryptedData.split("#"); // Séparer les données des différents tableaux
+            if (tablesData.length >= 1) { // Vérifier si le premier tableau est présent
                 String[] characteristicsData = tablesData[0].split("\n");
                 int startIndex = 0;
                 if (characteristicsData.length > 0 && characteristicsData[0].trim().isEmpty()) {
@@ -1116,10 +1770,24 @@ public class joueur {
                     startIndex = 1; // Ignorer la première ligne si elle est vide
                 }
                 int numRows = Math.min(skillsData.length, skillTableModel.getRowCount());
-                for (int i = startIndex; i < numRows; i++) {
+                for (int i = startIndex; i < numRows + 1; i++) {
                     String[] values = skillsData[i].split(",");
                     for (int j = 0; j < values.length && j < skillTableModel.getColumnCount(); j++) {
                         skillTableModel.setValueAt(values[j], i - startIndex, j);
+                    }
+                }
+            }
+            if (tablesData.length >= 3) { // Vérifier si le troisième tableau est présent
+                String[] weaponsData = tablesData[2].split("\n");
+                int startIndex = 0;
+                if (weaponsData.length > 0 && weaponsData[0].trim().isEmpty()) {
+                    startIndex = 1; // Ignorer la première ligne si elle est vide
+                }
+                int numRows = Math.min(weaponsData.length, WeaponsTableModel.getRowCount());
+                for (int i = startIndex; i < numRows + 1; i++) {
+                    String[] values = weaponsData[i].split(",");
+                    for (int j = 0; j < values.length && j < WeaponsTableModel.getColumnCount(); j++) {
+                        WeaponsTableModel.setValueAt(values[j], i - startIndex, j);
                     }
                 }
             }
