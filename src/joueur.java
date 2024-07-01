@@ -420,7 +420,7 @@ public class joueur {
 
                 // Obtenir le degré de base en fonction de la sous-race et du nom de la
                 // compétence
-                int baseDegree = getBaseDegree(subRace, skillName);
+                int baseDegree = BaseDegreeForSkill(subRace, skillName);
 
                 // Demander le nombre de cases
                 int numCases = Integer
@@ -737,7 +737,7 @@ public class joueur {
         }
     }
 
-    private static int getBaseDegree(String subRace, String skillName) {
+    private static int BaseDegreeForSkill(String subRace, String skillName) {
         int baseDegree = 0;
         switch (subRace) {
             case "aucun pour Hobbit":
