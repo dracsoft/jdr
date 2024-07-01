@@ -752,11 +752,11 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
 
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -766,16 +766,16 @@ public class joueur {
                         baseDegree = 1;
                         break;
                     case "Cuir Souple":
-                        baseDegree = 0;
+                        baseDegree = 3;
                         break;
                     case "Cuir Rigide":
-                        baseDegree = 0;
+                        baseDegree = 3;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -788,13 +788,13 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Cuir Rigide":
-                        baseDegree = 0;
+                        baseDegree = 1;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 3;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -810,10 +810,10 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -829,10 +829,10 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 2;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -845,13 +845,13 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Cuir Rigide":
-                        baseDegree = 0;
+                        baseDegree = 2;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -864,13 +864,13 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Cuir Rigide":
-                        baseDegree = 0;
+                        baseDegree = 1;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -883,13 +883,13 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Cuir Rigide":
-                        baseDegree = 0;
+                        baseDegree = 1;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 2;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -902,13 +902,13 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Cuir Rigide":
-                        baseDegree = 0;
+                        baseDegree = 1;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -924,10 +924,10 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -937,16 +937,16 @@ public class joueur {
                         baseDegree = 1;
                         break;
                     case "Cuir Souple":
-                        baseDegree = 0;
+                        baseDegree = 1;
                         break;
                     case "Cuir Rigide":
                         baseDegree = 0;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -956,16 +956,16 @@ public class joueur {
                         baseDegree = 1;
                         break;
                     case "Cuir Souple":
-                        baseDegree = 0;
+                        baseDegree = 3;
                         break;
                     case "Cuir Rigide":
                         baseDegree = 0;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -978,13 +978,13 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Cuir Rigide":
-                        baseDegree = 0;
+                        baseDegree = 1;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 2;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -994,16 +994,16 @@ public class joueur {
                         baseDegree = 1;
                         break;
                     case "Cuir Souple":
-                        baseDegree = 0;
+                        baseDegree = 1;
                         break;
                     case "Cuir Rigide":
-                        baseDegree = 0;
+                        baseDegree = 1;
                         break;
                     case "Cotte de Maille":
                         baseDegree = 1;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -1019,10 +1019,10 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -1032,16 +1032,16 @@ public class joueur {
                         baseDegree = 1;
                         break;
                     case "Cuir Souple":
-                        baseDegree = 0;
+                        baseDegree = 1;
                         break;
                     case "Cuir Rigide":
                         baseDegree = 0;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -1051,16 +1051,16 @@ public class joueur {
                         baseDegree = 1;
                         break;
                     case "Cuir Souple":
-                        baseDegree = 0;
+                        baseDegree = 1;
                         break;
                     case "Cuir Rigide":
                         baseDegree = 0;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -1070,16 +1070,16 @@ public class joueur {
                         baseDegree = 1;
                         break;
                     case "Cuir Souple":
-                        baseDegree = 0;
+                        baseDegree = 3;
                         break;
                     case "Cuir Rigide":
                         baseDegree = 0;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -1093,13 +1093,13 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Cuir Rigide":
-                        baseDegree = 0;
+                        baseDegree = 1;
                         break;
                     case "Cotte de Maille":
                         baseDegree = 1;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -1115,10 +1115,10 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -1134,10 +1134,10 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -1153,10 +1153,10 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Cotte de Maille":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Plate":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -1170,7 +1170,7 @@ public class joueur {
             case "aucun pour Hobbit":
                 switch (weaponName) {
                     case "Tranchant à 1 main":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Contandant à 1 main":
                         baseDegree = 0;
@@ -1179,45 +1179,45 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Lancer":
-                        baseDegree = 1;
+                        baseDegree = 2;
                         break;
                     case "Projectile":
-                        baseDegree = 1;
+                        baseDegree = 2;
                         break;
                     case "D'Hast":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
             case "aucun pour Umli":
                 switch (weaponName) {
                     case "Tranchant à 1 main":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Contandant à 1 main":
-                        baseDegree = 0;
+                        baseDegree = 3;
                         break;
                     case "à 2 main":
-                        baseDegree = 0;
+                        baseDegree = 1;
                         break;
                     case "Lancer":
                         baseDegree = 1;
                         break;
                     case "Projectile":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "D'Hast":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
             case "aucun pour Nain":
                 switch (weaponName) {
                     case "Tranchant à 1 main":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Contandant à 1 main":
-                        baseDegree = 0;
+                        baseDegree = 4;
                         break;
                     case "à 2 main":
                         baseDegree = 0;
@@ -1226,32 +1226,32 @@ public class joueur {
                         baseDegree = 1;
                         break;
                     case "Projectile":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "D'Hast":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
             case "Béornides":
                 switch (weaponName) {
                     case "Tranchant à 1 main":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Contandant à 1 main":
                         baseDegree = 0;
                         break;
                     case "à 2 main":
-                        baseDegree = 0;
+                        baseDegree = 1;
                         break;
                     case "Lancer":
                         baseDegree = 1;
                         break;
                     case "Projectile":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "D'Hast":
-                        baseDegree = 1;
+                        baseDegree = 2;
                         break;
                 }
                 break;
@@ -1273,14 +1273,14 @@ public class joueur {
                         baseDegree = 1;
                         break;
                     case "D'Hast":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
             case "Corsaires":
                 switch (weaponName) {
                     case "Tranchant à 1 main":
-                        baseDegree = 1;
+                        baseDegree = 2;
                         break;
                     case "Contandant à 1 main":
                         baseDegree = 0;
@@ -1295,17 +1295,17 @@ public class joueur {
                         baseDegree = 1;
                         break;
                     case "D'Hast":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
             case "Dorwinrim":
                 switch (weaponName) {
                     case "Tranchant à 1 main":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Contandant à 1 main":
-                        baseDegree = 0;
+                        baseDegree = 1;
                         break;
                     case "à 2 main":
                         baseDegree = 0;
@@ -1324,16 +1324,16 @@ public class joueur {
             case "Dunedain":
                 switch (weaponName) {
                     case "Tranchant à 1 main":
-                        baseDegree = 1;
+                        baseDegree = 2;
                         break;
                     case "Contandant à 1 main":
                         baseDegree = 0;
                         break;
                     case "à 2 main":
-                        baseDegree = 0;
+                        baseDegree = 1;
                         break;
                     case "Lancer":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Projectile":
                         baseDegree = 1;
@@ -1346,22 +1346,22 @@ public class joueur {
             case "Dunelendings":
                 switch (weaponName) {
                     case "Tranchant à 1 main":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Contandant à 1 main":
-                        baseDegree = 0;
+                        baseDegree = 1;
                         break;
                     case "à 2 main":
                         baseDegree = 0;
                         break;
                     case "Lancer":
-                        baseDegree = 1;
+                        baseDegree = 2;
                         break;
                     case "Projectile":
                         baseDegree = 1;
                         break;
                     case "D'Hast":
-                        baseDegree = 1;
+                        baseDegree = 2;
                         break;
                 }
                 break;
@@ -1380,10 +1380,10 @@ public class joueur {
                         baseDegree = 1;
                         break;
                     case "Projectile":
-                        baseDegree = 1;
+                        baseDegree = 2;
                         break;
                     case "D'Hast":
-                        baseDegree = 1;
+                        baseDegree = 2;
                         break;
                 }
                 break;
@@ -1402,17 +1402,17 @@ public class joueur {
                         baseDegree = 1;
                         break;
                     case "Projectile":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "D'Hast":
-                        baseDegree = 1;
+                        baseDegree = 2;
                         break;
                 }
                 break;
             case "Lossoth":
                 switch (weaponName) {
                     case "Tranchant à 1 main":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Contandant à 1 main":
                         baseDegree = 0;
@@ -1421,20 +1421,20 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Lancer":
-                        baseDegree = 1;
+                        baseDegree = 3;
                         break;
                     case "Projectile":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "D'Hast":
-                        baseDegree = 1;
+                        baseDegree = 2;
                         break;
                 }
                 break;
             case "Rohirim":
                 switch (weaponName) {
                     case "Tranchant à 1 main":
-                        baseDegree = 1;
+                        baseDegree = 2;
                         break;
                     case "Contandant à 1 main":
                         baseDegree = 0;
@@ -1443,7 +1443,7 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Lancer":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Projectile":
                         baseDegree = 1;
@@ -1487,20 +1487,20 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Lancer":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Projectile":
                         baseDegree = 1;
                         break;
                     case "D'Hast":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
             case "Variags":
                 switch (weaponName) {
                     case "Tranchant à 1 main":
-                        baseDegree = 1;
+                        baseDegree = 2;
                         break;
                     case "Contandant à 1 main":
                         baseDegree = 0;
@@ -1544,7 +1544,7 @@ public class joueur {
             case "Woses":
                 switch (weaponName) {
                     case "Tranchant à 1 main":
-                        baseDegree = 1;
+                        baseDegree = 2;
                         break;
                     case "Contandant à 1 main":
                         baseDegree = 0;
@@ -1553,10 +1553,10 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Lancer":
-                        baseDegree = 1;
+                        baseDegree = 4;
                         break;
                     case "Projectile":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "D'Hast":
                         baseDegree = 1;
@@ -1575,13 +1575,13 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Lancer":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Projectile":
-                        baseDegree = 1;
+                        baseDegree = 2;
                         break;
                     case "D'Hast":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -1597,13 +1597,13 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Lancer":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Projectile":
-                        baseDegree = 1;
+                        baseDegree = 3;
                         break;
                     case "D'Hast":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -1619,13 +1619,13 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Lancer":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Projectile":
-                        baseDegree = 1;
+                        baseDegree = 2;
                         break;
                     case "D'Hast":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
@@ -1641,13 +1641,13 @@ public class joueur {
                         baseDegree = 0;
                         break;
                     case "Lancer":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                     case "Projectile":
                         baseDegree = 1;
                         break;
                     case "D'Hast":
-                        baseDegree = 1;
+                        baseDegree = 0;
                         break;
                 }
                 break;
