@@ -11,8 +11,8 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -89,7 +89,7 @@ public class joueur {
     private static void createAndShowGUI() {
         // Créer une nouvelle fenêtre
         JFrame frame = new JFrame("Caractéristiques");
-        frame.setSize(800, 400); // Définir la taille de la fenêtre
+        frame.setSize(1000, 600); // Définir la taille de la fenêtre
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Fermer l'application lorsque la fenêtre est fermée
 
         // Créer un panneau pour organiser les composants
@@ -104,16 +104,13 @@ public class joueur {
         String[] subRaces5 = { "aucun pour Nain" };
 
         // Créer une liste déroulante pour la profession
-        String[] professions = { "Guerrier", "Bard", "Mage", "Prêtre", "Paladin", "Ranger" }; // ajouter le prof ici
-                                                                                              // ligne 90 98 a ne pas
-                                                                                              // oublier pour configuré
-                                                                                              // la race de manier
-                                                                                              // arentre les valeur auto
+        String[] professions = { "Guerrier", "Bard", "Mage", "Prêtre", "Paladin", "Ranger" };
         professionComboBox = new JComboBox<>(professions);
         String[] races = { "Nain", "Humain", "Elfe", "Hobbit", "Umli" };
         raceComboBox = new JComboBox<>(races);
         subRaceComboBox = new JComboBox<>();
-        subRaceComboBox.setEnabled(false); // Set enabled state
+        subRaceComboBox.setEnabled(false);
+
         raceComboBox.addActionListener(e -> {
             String selectedRace = (String) raceComboBox.getSelectedItem();
             if (selectedRace.equals("Humain")) {
@@ -130,67 +127,61 @@ public class joueur {
             subRaceComboBox.setEnabled(true);
         });
 
-        subRaceComboBox.setEnabled(false);
         // Créer un bouton pour saisir les valeurs
         JButton enterButton = new JButton("Entrer Valeurs");
-        enterButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                enterValues();
-            }
-        });
+        enterButton.addActionListener(e -> enterValues());
+
         // Créer un bouton pour enregistrer les données
         JButton saveButton = new JButton("Enregistrer");
-        saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                playerName = JOptionPane.showInputDialog("Entrez le nom du joueur:");
-                if (playerName != null && !playerName.trim().isEmpty()) {
-                    saveData(playerName);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Nom du joueur invalide.");
-                }
+        saveButton.addActionListener(e -> {
+            playerName = JOptionPane.showInputDialog("Entrez le nom du joueur:");
+            if (playerName != null && !playerName.trim().isEmpty()) {
+                saveData(playerName);
+            } else {
+                JOptionPane.showMessageDialog(null, "Nom du joueur invalide.");
             }
         });
+
         // Créer un bouton pour ouvrir les données
         JButton openButton = new JButton("Ouvrir");
-        openButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                playerName = JOptionPane.showInputDialog("Entrez le nom du joueur:");
-                if (playerName != null && !playerName.trim().isEmpty()) {
-                    loadData(playerName);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Nom du joueur invalide.");
-                }
+        openButton.addActionListener(e -> {
+            playerName = JOptionPane.showInputDialog("Entrez le nom du joueur:");
+            if (playerName != null && !playerName.trim().isEmpty()) {
+                loadData(playerName);
+            } else {
+                JOptionPane.showMessageDialog(null, "Nom du joueur invalide.");
             }
         });
+
         // Créer un bouton pour supprimer les données
         JButton deleteButton = new JButton("Supprimer");
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                playerName = JOptionPane.showInputDialog("Entrez le nom du joueur à supprimer:");
-                if (playerName != null && !playerName.trim().isEmpty()) {
-                    deletePlayerWithKey(playerName);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Nom du joueur invalide.");
-                }
+        deleteButton.addActionListener(e -> {
+            playerName = JOptionPane.showInputDialog("Entrez le nom du joueur à supprimer:");
+            if (playerName != null && !playerName.trim().isEmpty()) {
+                deletePlayerWithKey(playerName);
+            } else {
+                JOptionPane.showMessageDialog(null, "Nom du joueur invalide.");
             }
         });
 
         // Créer un panneau pour les listes déroulantes et les boutons
-        JPanel comboPanel = new JPanel();
-        comboPanel.add(new JLabel("Profession: "));
-        comboPanel.add(professionComboBox);
-        comboPanel.add(new JLabel("Race: "));
-        comboPanel.add(raceComboBox);
-        comboPanel.add(new JLabel("Sous-race: "));
-        comboPanel.add(subRaceComboBox);
-        comboPanel.add(enterButton);
-        comboPanel.add(saveButton);
-        comboPanel.add(openButton);
-        comboPanel.add(deleteButton);
+        JPanel comboPanel = new JPanel(new GridLayout(2, 1));
+        JPanel subComboPanel = new JPanel(new FlowLayout());
+        subComboPanel.add(new JLabel("Profession: "));
+        subComboPanel.add(professionComboBox);
+        subComboPanel.add(new JLabel("Race: "));
+        subComboPanel.add(raceComboBox);
+        subComboPanel.add(new JLabel("Sous-race: "));
+        subComboPanel.add(subRaceComboBox);
+        comboPanel.add(subComboPanel);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(enterButton);
+        buttonPanel.add(saveButton);
+        buttonPanel.add(openButton);
+        buttonPanel.add(deleteButton);
+        comboPanel.add(buttonPanel);
+
         panel.add(comboPanel, BorderLayout.NORTH);
 
         // Tableau pour les caractéristiques
@@ -205,11 +196,9 @@ public class joueur {
                 { "Chance", 0, 0, "", 0 },
                 { "Apparence", 0, 0, "", 0 },
         };
-
         characteristicTableModel = new DefaultTableModel(dataCharacteristics, columnNamesCharacteristics);
         JTable characteristicTable = new JTable(characteristicTableModel);
         JScrollPane characteristicScrollPane = new JScrollPane(characteristicTable);
-        panel.add(characteristicScrollPane, BorderLayout.WEST);
 
         // Tableau pour les compétences de mouvement et les types d'armure
         String[] columnNamesSkills = { "Manoeuvre/Mouvement", "Degré", "Prof", "carac", "Object", "Spéc", "Spéc2",
@@ -239,22 +228,25 @@ public class joueur {
         WeaponsTableModel = new DefaultTableModel(dataWeapons, columnWeaponsNamesSkills);
         JTable weaponsTable = new JTable(WeaponsTableModel);
         JScrollPane weaponsScrollPane = new JScrollPane(weaponsTable);
-        panel.add(weaponsScrollPane, BorderLayout.SOUTH); // Ajouter sous le tableau des compétences
-        panel.add(characteristicScrollPane, BorderLayout.WEST);
-        panel.add(skillScrollPane, BorderLayout.CENTER);
+
+        // Panneau pour les tableaux
+        JPanel tablePanel = new JPanel(new GridLayout(3, 1));
+        tablePanel.add(characteristicScrollPane);
+        tablePanel.add(skillScrollPane);
+        tablePanel.add(weaponsScrollPane);
+        panel.add(tablePanel, BorderLayout.CENTER);
 
         // Ajouter le panneau à la fenêtre
         frame.add(panel);
 
         // Rendre la fenêtre visible
         frame.setVisible(true);
-    }
+    } // Saisir les valeurs pour chaque caractéristique et les afficher dans le
+      // tableau
+      // Saisir les valeurs pour chaque caractéristique et les afficher dans le
+      // tableau
+      // Modifier la méthode enterValues
 
-    // Saisir les valeurs pour chaque caractéristique et les afficher dans le
-    // tableau
-    // Saisir les valeurs pour chaque caractéristique et les afficher dans le
-    // tableau
-    // Modifier la méthode enterValues
     private static void updateSubRaceValues(String race, String subRace, String subRace2, String subRace3,
             String subRace4, String subRace5) {
         // Vérifiez si la variable "race" est nulle avant de l'utiliser
@@ -488,7 +480,6 @@ public class joueur {
                     // Si la réponse est "Non", mettre les bonus à 0
                     skillTableModel.setValueAt("0", i, 4); // Bonus d'objet spécial
                     skillTableModel.setValueAt("0", i, 5); // Bonus de spécificité
-                    skillTableModel.setValueAt("0", i, 6); // Bonus de spécificité2
                 }
 
                 // Calculer et mettre à jour le total de la compétence
